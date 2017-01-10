@@ -5,10 +5,10 @@ services:
       volumes:
          - ./data/mongo:/data/db
       networks:
-         - mongo_net
+         - elastic_net
    elasticsearch:
       image: "elasticsearch:2"
-      command: "elasticsearch -Des.cluster.name='graylog'"
+      command: "elasticsearch -Des.cluster.name='graylog' --network.publish_host=_eth0_"
       volumes:
               - ./data/elasticsearch:/usr/share/elasticsearch/data
       networks:
@@ -22,17 +22,14 @@ services:
          GRAYLOG_PASSWORD_SECRET: somepasswordpepper
          GRAYLOG_ROOT_PASSWORD_SHA2: 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
          GRAYLOG_WEB_ENDPOINT_URI: http://127.0.0.1:9000/api
-         GRAYLOG_ELASTICSEARCH_DISCOVERY_ZEN_PING_UNICAST_HOSTS: elasticsearch:9300      
+         GRAYLOG_ELASTICSEARCH_DISCOVERY_ZEN_PING_UNICAST_HOSTS: "elasticsearch:9300"      
       networks:
-         - mongo_net
          - elastic_net
       ports:
          - "9000:9000"
          - "12201/udp:12201/udp"
          - "1514/udp:1514/udp"
 networks:
-   mongo_net:
-      driver: bridge
    elastic_net:
       driver: bridge         
 
